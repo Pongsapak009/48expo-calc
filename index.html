@@ -21,13 +21,6 @@
       max-width: 750px;
       margin: 32px auto;
     }
-    .logo48 {
-      width: 72px;
-      height: auto;
-      display: block;
-      margin: 0 auto 2px auto;
-      filter: drop-shadow(0 1px 6px #ead4ff99);
-    }
     h2 {
       color: #e03fd8;
       letter-spacing: 1px;
@@ -437,9 +430,9 @@
             </td>
             <td>${activity.cost}</td>
             <td>
-              <button class="small" onclick="updateActivity(${i}, -1)" disabled>-</button>
+              <button class="small" data-index="${i}" data-delta="-1" disabled>-</button>
               0
-              <button class="small" onclick="updateActivity(${i}, 1)" ${activity.cost > tickets ? 'disabled' : ''}>+</button>
+              <button class="small" data-index="${i}" data-delta="1" ${activity.cost > tickets ? 'disabled' : ''}>+</button>
             </td>
             <td></td>
           </tr>
@@ -452,8 +445,16 @@
       document.getElementById('output').innerHTML = summary + activityTable;
     });
 
-    // ฟังก์ชันอัปเดตรอบกิจกรรม + Tickets (หลังคำนวณเท่านั้น)
-    window.updateActivity = function(index, delta) {
+    // แก้บั๊ก: ใช้ event delegation กับปุ่ม + -
+    document.getElementById('output').addEventListener('click', function(e){
+      if(e.target.classList.contains('small')) {
+        let i = parseInt(e.target.dataset.index);
+        let delta = parseInt(e.target.dataset.delta);
+        updateActivity(i, delta);
+      }
+    });
+
+    function updateActivity(index, delta) {
       let tickets = lastTickets;
       let used = activities.reduce((sum, act, i) => sum + act.cost * activityCounts[i], 0);
       if (delta > 0 && used + activities[index].cost > tickets) return;
