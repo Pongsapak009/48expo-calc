@@ -454,9 +454,9 @@
       }
     });
 
-    // ฟังก์ชัน updateActivity แบบใหม่ (แก้บั๊ก + - แล้ว)
-    function updateActivity(index, delta) {
-let tickets = lastTickets;
+ // ฟังก์ชัน updateActivity แบบใหม่ (แก้บั๊ก + - แล้ว)
+function updateActivity(index, delta) {
+  let tickets = lastTickets;
   // อัปเดต state
   activityCounts[index] = Math.max(0, activityCounts[index] + delta);
 
@@ -479,7 +479,7 @@ let tickets = lastTickets;
   // อัปเดตยอด tickets ใช้/เหลือ
   document.getElementById('usedTickets').innerText = used;
   document.getElementById('remainingTickets').innerText = tickets - used;
-    }
+}
 
     // ---------------- Modal popup ---------------------
     window.showModal = function(index) {
