@@ -456,29 +456,29 @@
 
     // ฟังก์ชัน updateActivity แบบใหม่ (แก้บั๊ก + - แล้ว)
     function updateActivity(index, delta) {
-      let tickets = lastTickets;
-      // อัปเดต state
-      activityCounts[index] = Math.max(0, activityCounts[index] + delta);
+let tickets = lastTickets;
+  // อัปเดต state
+  activityCounts[index] = Math.max(0, activityCounts[index] + delta);
 
-      // คำนวณ tickets ใช้ไป
-      let used = activities.reduce((sum, act, i) => sum + act.cost * activityCounts[i], 0);
+  // คำนวณ tickets ใช้ไป
+  let used = activities.reduce((sum, act, i) => sum + act.cost * activityCounts[i], 0);
 
-      // อัปเดตจำนวนรอบและปุ่มในตาราง
-      activities.forEach((act, i) => {
-        let span = document.getElementById(`round${i}`);
-        if (span) {
-          span.innerText = activityCounts[i];
-          let tds = span.parentNode;
-          let btns = tds.getElementsByTagName('button');
-          btns[0].disabled = activityCounts[i] === 0;
-          // กดเพิ่มแล้วต้องไม่ใช้ tickets เกินจำนวนที่มี
-          btns[1].disabled = (used + act.cost - activityCounts[i] * act.cost + act.cost) > tickets;
-        }
-      });
+  // อัปเดตจำนวนรอบและปุ่มในตาราง
+  activities.forEach((act, i) => {
+    let span = document.getElementById(`round${i}`);
+    if (span) {
+      span.innerText = activityCounts[i];
+      let tds = span.parentNode;
+      let btns = tds.getElementsByTagName('button');
+      btns[0].disabled = activityCounts[i] === 0;
+      // ปุ่ม + ต้อง disabled ถ้า tickets ไม่พอจะเล่นอีกรอบ
+      btns[1].disabled = (tickets - used) < act.cost;
+    }
+  });
 
-      // อัปเดตยอด tickets ใช้/เหลือ
-      document.getElementById('usedTickets').innerText = used;
-      document.getElementById('remainingTickets').innerText = tickets - used;
+  // อัปเดตยอด tickets ใช้/เหลือ
+  document.getElementById('usedTickets').innerText = used;
+  document.getElementById('remainingTickets').innerText = tickets - used;
     }
 
     // ---------------- Modal popup ---------------------
