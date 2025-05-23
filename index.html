@@ -431,7 +431,7 @@
             <td>${activity.cost}</td>
             <td>
               <button class="small" data-index="${i}" data-delta="-1" disabled>-</button>
-              0
+              <span class="round-count" id="round${i}">0</span>
               <button class="small" data-index="${i}" data-delta="1" ${activity.cost > tickets ? 'disabled' : ''}>+</button>
             </td>
             <td></td>
@@ -461,16 +461,15 @@
       activityCounts[index] = Math.max(0, activityCounts[index] + delta);
 
       // อัปเดตจำนวนรอบในตาราง
-      let table = document.querySelectorAll('.table-activities tr');
       activities.forEach((act, i) => {
-        if(table[i+1]) {
+        let span = document.getElementById(`round${i}`);
+        if(span) {
+          span.innerText = activityCounts[i];
           // ปุ่ม -/+
-          let tds = table[i+1].getElementsByTagName('td')[2];
+          let tds = span.parentNode;
           let btns = tds.getElementsByTagName('button');
           btns[0].disabled = activityCounts[i] === 0;
           btns[1].disabled = (activities[i].cost * (activityCounts[i] + 1) + used - (activityCounts[i] * activities[i].cost)) > tickets;
-          // จำนวนรอบ
-          tds.childNodes[1].nodeValue = ` ${activityCounts[i]} `;
         }
       });
       // อัปเดตยอด tickets ใช้/เหลือ
