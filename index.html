@@ -454,26 +454,29 @@
       }
     });
 
+    // ฟังก์ชัน updateActivity แบบใหม่ (แก้บั๊ก + - แล้ว)
     function updateActivity(index, delta) {
       let tickets = lastTickets;
-      let used = activities.reduce((sum, act, i) => sum + act.cost * activityCounts[i], 0);
-      if (delta > 0 && used + activities[index].cost > tickets) return;
+      // อัปเดต state
       activityCounts[index] = Math.max(0, activityCounts[index] + delta);
 
-      // อัปเดตจำนวนรอบในตาราง
+      // คำนวณ tickets ใช้ไป
+      let used = activities.reduce((sum, act, i) => sum + act.cost * activityCounts[i], 0);
+
+      // อัปเดตจำนวนรอบและปุ่มในตาราง
       activities.forEach((act, i) => {
         let span = document.getElementById(`round${i}`);
-        if(span) {
+        if (span) {
           span.innerText = activityCounts[i];
-          // ปุ่ม -/+
           let tds = span.parentNode;
           let btns = tds.getElementsByTagName('button');
           btns[0].disabled = activityCounts[i] === 0;
-          btns[1].disabled = (activities[i].cost * (activityCounts[i] + 1) + used - (activityCounts[i] * activities[i].cost)) > tickets;
+          // กดเพิ่มแล้วต้องไม่ใช้ tickets เกินจำนวนที่มี
+          btns[1].disabled = (used + act.cost - activityCounts[i] * act.cost + act.cost) > tickets;
         }
       });
+
       // อัปเดตยอด tickets ใช้/เหลือ
-      used = activities.reduce((sum, act, i) => sum + act.cost * activityCounts[i], 0);
       document.getElementById('usedTickets').innerText = used;
       document.getElementById('remainingTickets').innerText = tickets - used;
     }
